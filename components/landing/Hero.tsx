@@ -9,7 +9,7 @@ const STAT_PILLS = [
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#080c18] pt-32 pb-10">
+    <section className="relative isolate overflow-hidden bg-[#080c18] pt-32 pb-24">
 
       {/* Grid texture */}
       <div

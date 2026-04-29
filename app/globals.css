@@ -25,17 +25,7 @@ body {
 }
 
 /* ✅ GLOBAL SPACING SYSTEM */
-section {
-  padding-top: 60px;
-  padding-bottom: 60px;
-}
 
-@media (min-width: 768px) {
-  section {
-    padding-top: 100px;
-    padding-bottom: 100px;
-  }
-}
 
 /* REMOVE default cramped feel */
 h1, h2, h3, h4 {

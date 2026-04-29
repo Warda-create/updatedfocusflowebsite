@@ -26,7 +26,6 @@ export default function RootLayout({
 
         <Navbar />
 
-        {/* FIXED spacing system */}
         <main className="pt-20">
           <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
             {children}
