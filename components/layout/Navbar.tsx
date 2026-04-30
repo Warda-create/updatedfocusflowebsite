@@ -22,8 +22,14 @@ const APP_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const isApp = pathname !== "/";
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // ✅ FIX: proper app route detection
+  const isApp =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/focus") ||
+    pathname.startsWith("/tasks") ||
+    pathname.startsWith("/notes");
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-slate-800/60 bg-[#080c18]/70 backdrop-blur-md">
@@ -40,7 +46,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Center Nav */}
+        {/* Desktop Nav */}
         <div className="hidden lg:flex flex-1 justify-center">
           <div className="flex items-center gap-6 px-4 py-2 rounded-xl bg-slate-900/40 border border-slate-800">
 
@@ -89,7 +95,7 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="lg:hidden flex items-center justify-center h-10 w-10 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
@@ -103,7 +109,7 @@ export function Navbar() {
       {menuOpen && (
         <div className="lg:hidden border-t border-slate-800 bg-[#080c18]/95 px-4 sm:px-6 py-6 flex flex-col gap-4">
 
-          {/* HOME BUTTON (ONLY in app pages) */}
+          {/* HOME BUTTON (APP ONLY) */}
           {isApp && (
             <Link
               href="/"
@@ -115,19 +121,21 @@ export function Navbar() {
           )}
 
           {/* LINKS */}
-          {(isApp ? APP_LINKS : NAV_LINKS).map(({ href, label, icon }) => (
+          {(isApp ? APP_LINKS : NAV_LINKS).map((item) => (
             <Link
-              key={href}
-              href={href}
+              key={item.href}
+              href={item.href}
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
             >
-              {icon && <span className="text-sm opacity-70">{icon}</span>}
-              {label}
+              {"icon" in item && (
+                <span className="text-sm opacity-70">{item.icon}</span>
+              )}
+              {item.label}
             </Link>
           ))}
 
-          {/* CTA (Landing only) */}
+          {/* CTA */}
           {!isApp && (
             <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
               <Button className="w-full mt-3">
