@@ -7,13 +7,21 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 
-const NAV_LINKS = [
+/* ---------------- TYPES ---------------- */
+type NavItem = {
+  href: string;
+  label: string;
+  icon?: string;
+};
+
+/* ---------------- DATA ---------------- */
+const NAV_LINKS: NavItem[] = [
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How It Works" },
   { href: "#pricing", label: "Pricing" },
 ];
 
-const APP_LINKS = [
+const APP_LINKS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "⬡" },
   { href: "/focus", label: "Focus", icon: "◎" },
   { href: "/tasks", label: "Tasks", icon: "◻" },
@@ -24,12 +32,15 @@ export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ FIX: proper app route detection
   const isApp =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/focus") ||
     pathname.startsWith("/tasks") ||
     pathname.startsWith("/notes");
+
+  const showHome = pathname !== "/";
+
+  const links: NavItem[] = isApp ? APP_LINKS : NAV_LINKS;
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 border-b border-slate-800/60 bg-[#080c18]/70 backdrop-blur-md">
@@ -50,46 +61,38 @@ export function Navbar() {
         <div className="hidden lg:flex flex-1 justify-center">
           <div className="flex items-center gap-6 px-4 py-2 rounded-xl bg-slate-900/40 border border-slate-800">
 
-            {isApp
-              ? APP_LINKS.map(({ href, label, icon }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition",
-                      pathname === href
-                        ? "bg-violet-600/20 text-violet-300 border border-violet-500/30"
-                        : "text-slate-400 hover:text-white hover:bg-slate-800"
-                    )}
-                  >
-                    <span className="text-xs opacity-70">{icon}</span>
-                    {label}
-                  </Link>
-                ))
-              : NAV_LINKS.map(({ href, label }) => (
-                  <a
-                    key={href}
-                    href={href}
-                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                  >
-                    {label}
-                  </a>
-                ))}
+            {links.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition",
+                  pathname === item.href
+                    ? "bg-violet-600/20 text-violet-300 border border-violet-500/30"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800"
+                )}
+              >
+                {item.icon && (
+                  <span className="text-xs opacity-70">{item.icon}</span>
+                )}
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
 
         {/* Desktop Right */}
         <div className="hidden lg:flex items-center">
-          {!isApp ? (
-            <Link href="/dashboard">
-              <Button variant="primary" size="md">
-                Open App →
-              </Button>
-            </Link>
-          ) : (
+          {showHome ? (
             <Link href="/">
               <Button variant="ghost" size="sm">
                 ← Home
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/dashboard">
+              <Button variant="primary" size="md">
+                Open App →
               </Button>
             </Link>
           )}
@@ -109,8 +112,8 @@ export function Navbar() {
       {menuOpen && (
         <div className="lg:hidden border-t border-slate-800 bg-[#080c18]/95 px-4 sm:px-6 py-6 flex flex-col gap-4">
 
-          {/* HOME BUTTON (APP ONLY) */}
-          {isApp && (
+          {/* Home */}
+          {showHome && (
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
@@ -120,15 +123,15 @@ export function Navbar() {
             </Link>
           )}
 
-          {/* LINKS */}
-          {(isApp ? APP_LINKS : NAV_LINKS).map((item) => (
+          {/* Links */}
+          {links.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
             >
-              {"icon" in item && (
+              {item.icon && (
                 <span className="text-sm opacity-70">{item.icon}</span>
               )}
               {item.label}
@@ -136,7 +139,7 @@ export function Navbar() {
           ))}
 
           {/* CTA */}
-          {!isApp && (
+          {!showHome && (
             <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
               <Button className="w-full mt-3">
                 Open App →
