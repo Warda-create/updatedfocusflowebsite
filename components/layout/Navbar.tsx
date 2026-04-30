@@ -40,7 +40,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Center Nav */}
+        {/* Desktop Center Nav */}
         <div className="hidden lg:flex flex-1 justify-center">
           <div className="flex items-center gap-6 px-4 py-2 rounded-xl bg-slate-900/40 border border-slate-800">
 
@@ -72,7 +72,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Right */}
+        {/* Desktop Right */}
         <div className="hidden lg:flex items-center">
           {!isApp ? (
             <Link href="/dashboard">
@@ -89,7 +89,7 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="lg:hidden flex items-center justify-center h-10 w-10 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
@@ -99,21 +99,35 @@ export function Navbar() {
 
       </Container>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="lg:hidden border-t border-slate-800 bg-[#080c18]/95 px-4 sm:px-6 py-6 flex flex-col gap-4">
 
-          {(isApp ? APP_LINKS : NAV_LINKS).map(({ href, label }) => (
+          {/* HOME BUTTON (ONLY in app pages) */}
+          {isApp && (
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+              className="px-4 py-3 rounded-lg text-base font-medium text-violet-300 bg-violet-500/10 border border-violet-500/20"
+            >
+              ← Home
+            </Link>
+          )}
+
+          {/* LINKS */}
+          {(isApp ? APP_LINKS : NAV_LINKS).map(({ href, label, icon }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMenuOpen(false)}
-              className="px-4 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
+              className="flex items-center gap-2 px-4 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800"
             >
+              {icon && <span className="text-sm opacity-70">{icon}</span>}
               {label}
             </Link>
           ))}
 
+          {/* CTA (Landing only) */}
           {!isApp && (
             <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
               <Button className="w-full mt-3">
@@ -121,8 +135,10 @@ export function Navbar() {
               </Button>
             </Link>
           )}
+
         </div>
       )}
+
     </header>
   );
 }
